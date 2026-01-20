@@ -22,13 +22,8 @@ permissions:
   contents: read
 
 jobs:
-  ci:
-    uses: ./.github/workflows/ci.yml
-
   build:
     name: Build docker image
-    needs: [ ci ]
-
     timeout-minutes: 60
 
     runs-on: ubuntu-latest
