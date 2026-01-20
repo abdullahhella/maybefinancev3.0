@@ -18,11 +18,19 @@ class Provider::Registry
       raise Error.new("Provider '#{name}' not found in registry")
     end
 
-    def plaid_provider_for_region(region)
-      region.to_sym == :us ? plaid_us : plaid_eu
-    end
+      def plaid_provider_for_region(region)
+        region.to_sym == :us ? plaid_us : plaid_eu
+      end
 
-    private
+      private
+      def llm
+        provider_name = llm_provider_names.first
+
+        return nil unless provider_name.present?
+
+        send(provider_name)
+      end
+
       def stripe
         secret_key = ENV["STRIPE_SECRET_KEY"]
         webhook_secret = ENV["STRIPE_WEBHOOK_SECRET"]
@@ -67,6 +75,39 @@ class Provider::Registry
 
         Provider::Openai.new(access_token)
       end
+
+      def ollama
+        base_url = ENV.fetch("OLLAMA_BASE_URL", Setting.ollama_base_url)
+
+        return nil unless base_url.present?
+
+        model = ENV["LLM_MODEL"].presence || Setting.llm_model
+
+        Provider::Ollama.new(base_url: base_url, model: model)
+      end
+
+      def llm_provider_names
+        preferred = ENV.fetch("LLM_PROVIDER", Setting.llm_provider).presence
+        preferred = preferred.to_s.downcase.to_sym if preferred.present?
+        providers = []
+        providers << :openai if openai_available?
+        providers << :ollama if ollama_available?
+
+        if preferred.present?
+          return [preferred] if providers.include?(preferred)
+          return []
+        end
+
+        providers
+      end
+
+      def openai_available?
+        ENV.fetch("OPENAI_ACCESS_TOKEN", Setting.openai_access_token).present?
+      end
+
+      def ollama_available?
+        ENV.fetch("OLLAMA_BASE_URL", Setting.ollama_base_url).present?
+      end
   end
 
   def initialize(concept)
@@ -96,9 +137,9 @@ class Provider::Registry
       when :securities
         %i[synth]
       when :llm
-        %i[openai]
+        self.class.send(:llm_provider_names)
       else
-        %i[synth plaid_us plaid_eu github openai]
+        %i[synth plaid_us plaid_eu github openai ollama]
       end
     end
 end

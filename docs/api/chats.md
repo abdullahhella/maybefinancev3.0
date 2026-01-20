@@ -182,9 +182,8 @@ Currently, you need to poll the chat endpoint to check for new AI responses. Loo
 
 ### Available AI Models
 
-- `gpt-4` (default)
-- `gpt-4-turbo`
-- `gpt-3.5-turbo`
+The available models depend on the configured LLM provider. By default the app uses `gpt-4.1`.
+Self-hosted instances can set `LLM_MODEL` to choose a different model (for example, an Ollama model name).
 
 ### Tool Calls
 

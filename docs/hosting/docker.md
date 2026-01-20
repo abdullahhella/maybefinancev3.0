@@ -92,6 +92,15 @@ Fill in this file with the following variables:
 ```txt
 SECRET_KEY_BASE="replacemewiththegeneratedstringfromthepriorstep"
 POSTGRES_PASSWORD="replacemewithyourdesireddatabasepassword"
+
+# Optional: enable AI features
+# LLM_PROVIDER can be "openai" or "ollama"
+# LLM_MODEL should match the provider (example: "gpt-4.1" or "llama3.1")
+# OPENAI_ACCESS_TOKEN is required for OpenAI
+# OLLAMA_BASE_URL should point to your Ollama host (example: http://localhost:11434)
+# LLM_PROVIDER="ollama"
+# LLM_MODEL="llama3.1"
+# OLLAMA_BASE_URL="http://localhost:11434"
 ```
 
 ### Step 4: Run the app

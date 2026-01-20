@@ -43,6 +43,11 @@ x-rails-env: &rails_env
   REDIS_URL: redis://redis:6379/1
 # NOTE: enabling OpenAI will incur costs when you use AI-related features in the app (chat, rules).  Make sure you have set appropriate spend limits on your account before adding this.
   OPENAI_ACCESS_TOKEN: ${OPENAI_ACCESS_TOKEN}
+# LLM configuration (optional)
+# LLM_PROVIDER can be "openai" or "ollama"
+  LLM_PROVIDER: ${LLM_PROVIDER}
+  LLM_MODEL: ${LLM_MODEL}
+  OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
 
 services:
   web:
